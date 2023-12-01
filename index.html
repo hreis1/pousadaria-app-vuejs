@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <title>Document</title>
+  <title>POUSADARIA</title>
 </head>
 
 <body>
@@ -12,85 +12,98 @@
     <header>
       <nav class="navbar">
         <div class="container-fluid">
-          <a class="navbar-brand">POUSADARIA APP</a>
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
+          <a class="navbar-brand" href="/">POUSADARIA</a>
+          <div class="d-flex">
+            <input class="form-control me-2" placeholder="Buscar pousadas" v-model="searchTerm" @input="search">
+          </div>
         </div>
       </nav>
     </header>
+    <hr>
+    <main>
 
-    <div class="row mt-4">
-      <div class="col-md-3">
-        <div class="mb-4" v-for="inn in inns">
-          <div class="card card-body">
-            <h5 class="card-title text-center">{{ inn.trade_name }}</h5>
-            <a v-on:click="getInn(inn.id)" class="btn btn-primary btn-md">Ver detalhes</a>
-          </div>
+      <section id="inns" v-if="showInns">
+        <h2>Pousadas</h2>
+        <div v-if="inns.length == 0">
+          <h4>Nenhuma pousada encontrada</h4>
         </div>
-      </div>
-    
-      <div class="col-md-9 mb-4" id="inn-details" hidden>
-        <div class="card card-body mb-4">
-          <h5 class="card-title">{{ inn.trade_name }}</h5>
-          <ul>
-            <li class="list-group-item">Descrição: {{ inn.description }}</li>
-            <li class="list-group-item">Endereço: {{ inn.address }}, {{ inn.address_number }}, {{ inn.neighborhood }} - {{ inn.state }}</li>
-            <li class="list-group-item">Formas de pagamento: {{ inn.payment_methods }}</li>
-            <li class="list-group-item">Permite animais: {{ inn.pets_allowed }}</li>
-            <li class="list-group-item">Políticas: {{ inn.polices }}</li>
-            <li class="list-group-item">Telefone: {{ inn.phone }} | E-mail: {{ inn.email }} </li>
-            <li class="list-group-item">Horário de check-in: {{ inn.checkin_time }}</li>
-            <li class="list-group-item">Horário de check-out: {{ inn.checkout_time }}</li>
-          </ul>
-        </div>
-
-        <div id="rooms" hidden>
-          <div class="row">
-            <div class="col-md-6" v-for="room in rooms">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">{{ room.name }}</h5>
-                  <ul>
-                    <li class="list-group-item">Descrição: {{ room.description }}</li>
-                    <li class="list-group-item"> Diária: R$ {{ room.daily_rate }}</li>
-                    <li class="list-group-item">Dimensões: {{ room.dimension }} m² </li>
-                    <li class="list-group-item">Máximo de pessoas: {{ room.max_occupancy }}</li>
-                    <li class="list-group-item">Banheiro: {{ room.has_bathroom? 'Sim' : 'Não' }}</li>
-                    <li class="list-group-item">Varanda: {{ room.has_balcony? 'Sim' : 'Não' }}</li>
-                    <li class="list-group-item">Ar condicionado: {{ room.has_air_conditioning? 'Sim' : 'Não' }}</li>
-                    <li class="list-group-item">TV: {{ room.has_tv? 'Sim' : 'Não' }}</li>
-                    <li class="list-group-item">Guarda-roupa: {{ room.has_closet? 'Sim' : 'Não' }}</li>
-                    <li class="list-group-item">Cofre: {{ room.has_safe? 'Sim' : 'Não' }}</li>
-                    <li class="list-group-item">Acessível: {{ room.is_accessible? 'Sim' : 'Não' }}</li>
-                  </ul>
-
-                  <h5>Verificar disponibilidade</h5>
-
-                  <div class="mb-3 input-group">
-                    <label :for="'checkin-'+room.inn_id+'-'+room.id" class="input-group-text col-3">Check-in</label>
-                    <input type="date" class="form-control" :id="'checkin-'+room.inn_id+'-'+room.id">
-                  </div>
-                  <div class="mb-3 input-group">
-                    <label :for="'checkout-'+room.inn_id+'-'+room.id" class="input-group-text col-3">Check-out</label>
-                    <input type="date" class="form-control" :id="'checkout-'+room.inn_id+'-'+room.id">
-                  </div>
-                  <div class="mb-3">
-                    <label for="'number_of_guests-'+room.inn_id+'-'+room.id" class="form-label">Hóspedes</label>
-                    <input type="number" class="form-control" :id="'number_of_guests-'+room.inn_id+'-'+room.id">
-                  </div>
-                  <button v-on:click="checkRoom(room.inn_id,room.id, room)" class="btn btn-primary btn-md">Verificar</button>
-                </div>
-              </div>
+        <ul>
+          <li v-for="inn in inns">
+            <div>
+              {{ inn.trade_name }}
+              <button @click="showInnDetails(inn)">
+                Ver detalhes
+              </button>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </li>
+        </ul>
+      </section>
+
+      <section id="inn" v-if="selectedInn">
+        <h4>{{ selectedInn.trade_name }}</h4>
+        <ul>
+          <li>Telefone: {{ selectedInn.phone }}</li>
+          <li>E-mail: {{ selectedInn.email }}</li>
+          <li>Endereço: {{ selectedInn.address }}, {{ selectedInn.address_number }} - {{ selectedInn.neighborhood }}, {{ selectedInn.city }} - {{ selectedInn.state }} | CEP: {{ selectedInn.cep }}</li>
+          <li>Descrição: {{ selectedInn.description }}</li>
+          <li>Formas de pagamento: {{ selectedInn.payment_methods }}</li>
+          <li>Animais de estimação: {{ selectedInn.pets_allowed ? 'Aceitamos' : 'Não aceitamos' }}</li>
+          <li>Políticas: {{ selectedInn.polices }}</li>
+          <li>Horário de check-in: {{ selectedInn.checkin_time }}</li>
+          <li>Horário de check-out: {{ selectedInn.checkout_time }}</li>
+          <li>Nota média: {{ selectedInn.average_rating }}</li>
+          <button @click="hideInnDetails">Voltar</button>
+        </ul>
+        
+        <hr>
+        <h4>Quartos</h4>
+        <ul>
+          <li v-for="room in rooms">
+            <h5>{{ room.name }}</h5>
+            <ul>
+              <li>Descrição: {{ room.description }}</li>
+              <li>Dimensão: {{ room.dimension }} m²</li>
+              <li>Ocupação máxima: {{ room.max_occupancy }} pessoa(s)</li>
+              <li>Diária: R$ {{ room.daily_rate }}</li>
+              <li>Banheiro: {{ room.has_bathroom ? 'Sim' : 'Não' }}</li>
+              <li>Varanda: {{ room.has_balcony ? 'Sim' : 'Não' }}</li>
+              <li>Ar-condicionado: {{ room.has_air_conditioning ? 'Sim' : 'Não' }}</li>
+              <li>TV: {{ room.has_tv ? 'Sim' : 'Não' }}</li>
+              <li>Guarda-roupa: {{ room.has_closet ? 'Sim' : 'Não' }}</li>
+              <li>Cofre: {{ room.has_safe ? 'Sim' : 'Não' }}</li>
+              <li>Acessível: {{ room.is_accessible ? 'Sim' : 'Não' }}</li>
+              <li>Verificar disponibilidade:
+                <form @submit.prevent="checkAvailability(room)">
+                  <label>
+                    Data de check-in:
+                    <input type="date" v-model="checkin">
+                  </label>
+                  <label>
+                    Data de check-out:
+                    <input type="date" v-model="checkout">
+                  </label>
+                  <label>
+                    Número de hóspedes:
+                    <input type="number" v-model="number_of_guests">
+                  </label>
+                  <button type="submit">Verificar</button>
+                </form>
+              </li>
+              <li v-if="selectedRoom == room && errorMessages">
+                <p>{{ errorMessages }}</p>
+              </li>
+              <li v-if="selectedRoom == room && selectedRoom.available">
+                <p>Disponível! Valor total: R$ {{ selectedRoom.price }}</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+    </main>
   </div>
+</body>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
