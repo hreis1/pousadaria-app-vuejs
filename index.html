@@ -25,13 +25,13 @@
       <section id="inns" v-if="showInns">
         <h2>Pousadas</h2>
         <div v-if="inns.length == 0">
-          <h4>Nenhuma pousada encontrada</h4>
+          <h4 class="mt-4">Nenhuma pousada encontrada</h4>
         </div>
-        <ul>
-          <li v-for="inn in inns">
-            <div>
-              {{ inn.trade_name }}
-              <button @click="showInnDetails(inn)">
+        <ul class="list-group">
+          <li v-for="inn in inns" class="list-group-item">
+            <div class="d-flex m-4 justify-content-between">
+              <h4>{{ inn.trade_name }}</h4>
+              <button class="btn btn-primary btn-sm" @click="showInnDetails(inn)">
                 Ver detalhes
               </button>
             </div>
@@ -40,66 +40,74 @@
       </section>
 
       <section id="inn" v-if="selectedInn">
-        <h4>{{ selectedInn.trade_name }}</h4>
+        <h2>{{ selectedInn.trade_name }}</h2>
         <ul>
-          <li>Telefone: {{ selectedInn.phone }}</li>
-          <li>E-mail: {{ selectedInn.email }}</li>
-          <li>Endereço: {{ selectedInn.address }}, {{ selectedInn.address_number }} - {{ selectedInn.neighborhood }}, {{ selectedInn.city }} - {{ selectedInn.state }} | CEP: {{ selectedInn.cep }}</li>
-          <li>Descrição: {{ selectedInn.description }}</li>
-          <li>Formas de pagamento: {{ selectedInn.payment_methods }}</li>
-          <li>Animais de estimação: {{ selectedInn.pets_allowed ? 'Aceitamos' : 'Não aceitamos' }}</li>
-          <li>Políticas: {{ selectedInn.polices }}</li>
-          <li>Horário de check-in: {{ selectedInn.checkin_time }}</li>
-          <li>Horário de check-out: {{ selectedInn.checkout_time }}</li>
-          <li>Nota média: {{ selectedInn.average_rating }}</li>
-          <button @click="hideInnDetails">Voltar</button>
+          <li class="list-group-item">Telefone: {{ selectedInn.phone }}</li>
+          <li class="list-group-item">E-mail: {{ selectedInn.email }}</li>
+          <li class="list-group-item">Endereço: {{ selectedInn.address }}, {{ selectedInn.address_number }} - {{ selectedInn.neighborhood }}, {{ selectedInn.city }} - {{ selectedInn.state }} | CEP: {{ selectedInn.cep }}</li>
+          <li class="list-group-item">Descrição: {{ selectedInn.description }}</li>
+          <li class="list-group-item">Formas de pagamento: {{ selectedInn.payment_methods }}</li>
+          <li class="list-group-item">Animais de estimação: {{ selectedInn.pets_allowed ? 'Aceitamos' : 'Não aceitamos' }}</li>
+          <li class="list-group-item">Políticas: {{ selectedInn.polices }}</li>
+          <li class="list-group-item">Horário de check-in: {{ selectedInn.checkin_time }}</li>
+          <li class="list-group-item">Horário de check-out: {{ selectedInn.checkout_time }}</li>
+          <li class="list-group-item">Nota média: {{ selectedInn.average_score }}</li>
+          <button class="btn btn-primary mt-4" @click="hideInnDetails">Voltar</button>
         </ul>
         
-        <hr>
-        <h4>Quartos</h4>
+        <hr class="mt-4">
+        <h2>Quartos</h2>
         <ul>
-          <li v-for="room in rooms">
-            <h5>{{ room.name }}</h5>
-            <ul>
-              <li>Descrição: {{ room.description }}</li>
-              <li>Dimensão: {{ room.dimension }} m²</li>
-              <li>Ocupação máxima: {{ room.max_occupancy }} pessoa(s)</li>
-              <li>Diária: R$ {{ room.daily_rate }}</li>
-              <li>Banheiro: {{ room.has_bathroom ? 'Sim' : 'Não' }}</li>
-              <li>Varanda: {{ room.has_balcony ? 'Sim' : 'Não' }}</li>
-              <li>Ar-condicionado: {{ room.has_air_conditioning ? 'Sim' : 'Não' }}</li>
-              <li>TV: {{ room.has_tv ? 'Sim' : 'Não' }}</li>
-              <li>Guarda-roupa: {{ room.has_closet ? 'Sim' : 'Não' }}</li>
-              <li>Cofre: {{ room.has_safe ? 'Sim' : 'Não' }}</li>
-              <li>Acessível: {{ room.is_accessible ? 'Sim' : 'Não' }}</li>
-              <li>Verificar disponibilidade:
-                <form @submit.prevent="checkAvailability(room)">
-                  <label>
-                    Data de check-in:
-                    <input type="date" v-model="checkin">
-                  </label>
-                  <label>
-                    Data de check-out:
-                    <input type="date" v-model="checkout">
-                  </label>
-                  <label>
-                    Número de hóspedes:
-                    <input type="number" v-model="number_of_guests">
-                  </label>
-                  <button type="submit">Verificar</button>
-                </form>
-              </li>
-              <li v-if="selectedRoom == room && errorMessages">
-                <p>{{ errorMessages }}</p>
-              </li>
-              <li v-if="selectedRoom == room && selectedRoom.available">
-                <p>Disponível! Valor total: R$ {{ selectedRoom.price }}</p>
-              </li>
+          <li v-for="room in rooms" class="list-group-item mt-4">
+            <ul class="row">
+              <div class="col-md-4">
+                <h4>{{ room.name }}</h4>
+                <li class="list-group-item">Descrição: {{ room.description }}</li>
+                <li class="list-group-item">Dimensão: {{ room.dimension }} m²</li>
+                <li class="list-group-item">Ocupação máxima: {{ room.max_occupancy }} pessoa(s)</li>
+                <li class="list-group-item">Diária: R$ {{ room.daily_rate }}</li>
+                <li class="list-group-item">Banheiro: {{ room.has_bathroom ? 'Sim' : 'Não' }}</li>
+                <li class="list-group-item">Varanda: {{ room.has_balcony ? 'Sim' : 'Não' }}</li>
+                <li class="list-group-item">Ar-condicionado: {{ room.has_air_conditioning ? 'Sim' : 'Não' }}</li>
+                <li class="list-group-item">TV: {{ room.has_tv ? 'Sim' : 'Não' }}</li>
+                <li class="list-group-item">Guarda-roupa: {{ room.has_closet ? 'Sim' : 'Não' }}</li>
+                <li class="list-group-item">Cofre: {{ room.has_safe ? 'Sim' : 'Não' }}</li>
+                <li class="list-group-item">Acessível: {{ room.is_accessible ? 'Sim' : 'Não' }}</li>
+              </div>
+
+              <div class="col-md-6">
+                <li class="list-group-item">
+                  <h4>Verificar disponibilidade:</h4>
+                  <div class="card card-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <form @submit.prevent="checkAvailability(room)">
+                            <label for="checkin" class="form-label">Data de check-in:</label>
+                            <input type="date" class="form-control" id="checkin" v-model="checkin">
+                            <label for="checkout" class="form-label">Data de check-out:</label>
+                            <input type="date" class="form-control" id="checkout" v-model="checkout">
+                            <label for="number_of_guests" class="form-label">Número de hóspedes:</label>
+                            <input type="number" class="form-control" id="number_of_guests" v-model="number_of_guests">
+                            <button type="submit" class="btn btn-primary mt-2">Verificar</button>
+                        </form>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="alert alert-success" v-if="selectedRoom == room && selectedRoom.available">
+                          <p>Disponível! Valor total: R$ {{ selectedRoom.price }}</p>
+                        </div>
+                        <div class="alert alert-danger" v-if="selectedRoom == room && errorMessages">
+                          <p>{{ errorMessages }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </div>
             </ul>
           </li>
         </ul>
       </section>
-
     </main>
   </div>
 </body>
